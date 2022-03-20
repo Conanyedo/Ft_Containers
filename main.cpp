@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "vector.hpp"
 
 template <class Iterator>
 class iterator_traits
@@ -37,15 +38,14 @@ class iterator_traits<const T*>
 template <class iter>
 void	some(iter f) // int *
 {
-	typedef typename iterator_traits<iter>::value_type value_type;
+	typedef  typename iterator_traits<iter>::value_type value_type;
 	value_type a = *f; //value_type = int
-	std::cout << a << std::endl;
+	std::cout << *a << std::endl;
 }
 
 int main()
 {
-	// std::vector<int> v(3, 1337);
-	// some(v.begin());
-	int arr[] = {1337, 42, 19};
-	some(arr);
+	ft::vector<int> vec(5, 1337);
+	ft::vector<int>	v(vec.begin(), vec.end());
+	ft::vector<int> vec2(vec);
 }
