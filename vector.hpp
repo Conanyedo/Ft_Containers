@@ -6,13 +6,14 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/03/20 15:26:01 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/03/21 19:33:43 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "myiterator.hpp"
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 namespace ft
 {
@@ -20,7 +21,7 @@ namespace ft
 	class vector
 	{
 		public:
-			//NOTE - MEMBER TYPES
+			//SECTION - MEMBER TYPES
 			typedef	T											value_type;
 			typedef	Alloc										allocator_type;
 			typedef	typename allocator_type::reference			reference;
@@ -32,7 +33,7 @@ namespace ft
 			typedef	typename allocator_type::difference_type 	difference_type;
 			typedef	typename allocator_type::size_type 			size_type;
 
-			//NOTE - MEMBER FUNCTIONS
+			//SECTION - CONSTRUCTORS - DESTRUCTOR
 			explicit vector (const allocator_type& alloc = allocator_type())
 			{
 				_alloc = alloc;
@@ -53,29 +54,34 @@ namespace ft
 					if (!n)
 						break ;
 				}
-				while (n < _size)
-					std::cout << " * " << _arr[n++];
-				std::cout << "\n";
+				// while (n < _size)
+				// 	std::cout << " * " << _arr[n++];
+				// std::cout << "\n";
 			}
 			template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
 					const allocator_type& alloc = allocator_type())
 			{
-				_alloc = alloc;
 				size_type	i = -1;
-				difference_type	size = last - first;
-				_arr = _alloc.allocate(size);
-				while (++i < size)
+				_alloc = alloc;
+				_capacity = last - first;
+				_size = last - first;
+				_arr = _alloc.allocate(_capacity);
+				while (++i < _capacity)
 				{
 					_arr[i] = *first;
 					first++;
 				}
-				i = -1;
-				while (++i < size)
-					std::cout << " - " << _arr[i];
-				std::cout << "\n";
+				// i = -1;
+				// while (++i < _capacity)
+				// 	std::cout << " - " << _arr[i];
+				// std::cout << "\n";
 			}
 			vector (const vector& x)
+			{
+				*this = x;
+			}
+			vector& operator= (const vector& x)
 			{
 				size_type	i = -1;
 				_alloc = x._alloc;
@@ -87,7 +93,14 @@ namespace ft
 				i = -1;
 				while (++i < _capacity)
 					std::cout << " + " << _arr[i];
+				return (*this);
 			}
+			~vector()
+			{
+				_alloc.deallocate(_arr, _capacity);
+			}
+			
+			//SECTION - MEMBER FUCTIONS
 			iterator begin()
 			{
 				return (_arr);
@@ -96,8 +109,40 @@ namespace ft
 			{
 				return (_arr + _size);
 			}
+			size_type size() const {return _size;}
+			size_type max_size() const 
+			{
+				size_type ret = std::pow(2,64)/sizeof(T);
+				return (ret - 1);
+			}
+			size_type capacity() const {return _capacity;}
+			reference operator[] (size_type n) {return (_arr[n]);}
+			void resize (size_type n, value_type val = value_type()) 
+			{
+				pointer			tmp;
+				size_type	i = -1;
+				
+				if (n <= _size)
+					_size = n;
+				else if (n > _size && n <= _capacity)
+				{
+					while (_size < n)
+						_arr[_size++] = val;
+				}
+				else if (n > _capacity)
+				{
+					tmp = _arr;
+					_capacity = (n <= (_capacity * 2)) ? (_capacity * 2) : n;
+					_arr = _alloc.allocate(_capacity);
+					while(++i < _size)
+						_arr[i] = tmp[i];
+					while (_size < n)
+						_arr[_size++] = val;
+					_alloc.deallocate(tmp, _capacity / 2);
+				}
+			}
 		
-		//NOTE - DATA MEMBERS
+		//SECTION - DATA MEMBERS
 		private:
 			pointer			_arr;
 			size_type		_size;
