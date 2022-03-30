@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/20 15:41:19 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/03/21 20:10:03 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/03/22 13:22:58 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ namespace ft
 			iterator_type	_ptr;
 		public:
 			myiterator() : _ptr(nullptr) {}
-			myiterator(iterator_type ptr) : _ptr(ptr) {}
-			// template <class Iter>
-  			myiterator (const myiterator& it) : _ptr(it._ptr) {}
+			explicit myiterator(iterator_type ptr) : _ptr(ptr) {}
+			template <class Iter>
+  			myiterator (const myiterator<Iter>& it) : _ptr(it._ptr) {}
 			  
 			iterator_type base() const{return _ptr;}
 			reference operator*() const{return *_ptr;}
