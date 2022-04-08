@@ -6,11 +6,12 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/03/30 23:07:39 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/03 18:19:51 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "myiterator.hpp"
+#include "enable_if.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -39,9 +40,9 @@ namespace ft
 				_alloc = alloc;
 				_capacity = 0;
 				_size = 0;
-				_arr = 0;
+				_arr = nullptr;
 			}
-			explicit vector (int n, const value_type& val = value_type(),
+			explicit vector (size_type n, const value_type& val = value_type(),
                 			const allocator_type& alloc = allocator_type())
 			{
 				_alloc = alloc;
@@ -54,28 +55,22 @@ namespace ft
 					if (!n)
 						break ;
 				}
-				// while (n < _size)
-				// 	std::cout << " * " << _arr[n++];
-				// std::cout << "\n";
 			}
 			template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
-					const allocator_type& alloc = allocator_type())
+					const allocator_type& alloc = allocator_type(),
+					typename enable_if<!is_integral <InputIterator>::value, InputIterator>)
 			{
 				size_type	i = -1;
 				_alloc = alloc;
 				_capacity = last - first;
-				_size = last - first;
+				_size = _capacity;
 				_arr = _alloc.allocate(_capacity);
 				while (++i < _capacity)
 				{
 					_arr[i] = *first;
 					first++;
 				}
-				// i = -1;
-				// while (++i < _capacity)
-				// 	std::cout << " - " << _arr[i];
-				// std::cout << "\n";
 			}
 			vector (const vector& x)
 			{
@@ -84,15 +79,17 @@ namespace ft
 			vector& operator= (const vector& x)
 			{
 				size_type	i = -1;
+				
+				if (this == &x)
+					return (*this);
 				_alloc = x._alloc;
+				if (_capacity)
+					_alloc.deallocate(_arr, _capacity);
 				_capacity = x._capacity;
 				_size = x._size;
 				_arr = _alloc.allocate(_capacity);
 				while (++i < _capacity)
 					_arr[i] = x._arr[i];
-				// i = -1;
-				// while (++i < _capacity)
-				// 	std::cout << " + " << _arr[i];
 				return (*this);
 			}
 			~vector()
@@ -173,21 +170,6 @@ namespace ft
 					_capacity = n;
 				}
 			}
-			// void shrink_to_fit()
-			// {
-			// 	pointer			tmp;
-			// 	size_type	i = -1;
-				
-			// 	if (_capacity > _size)
-			// 	{
-			// 		tmp = _arr;
-			// 		_arr = _alloc.allocate(_size);
-			// 		while(++i < _size)
-			// 			_arr[i] = tmp[i];
-			// 		_alloc.deallocate(tmp, _capacity);
-			// 		_capacity = _size;
-			// 	}
-			// }
 			reference at (size_type n)
 			{
 				if (n < _size)
@@ -356,13 +338,29 @@ namespace ft
 					_arr[pos] = _arr[pos + 1];
 					pos++;
 				}
-				_size--;
+				pos = position - this->begin();
+				if (pos < _size)
+					_size--;
 				return (this->begin() + pos);
 			}
 			iterator erase (iterator first, iterator last)
 			{
+				size_type	fpos = first - this->begin();
+				size_type	lpos = last - this->begin();
 				size_type	pos = last - first;
+				size_type	size = _size;
 				
+				if (lpos >= size)
+					_size = fpos;
+				else
+					_size -= pos;
+				while (lpos < size)
+				{
+					_arr[fpos] = _arr[lpos];
+					fpos++;
+					lpos++;
+				}
+				return (this->begin() + lpos);
 			}
 			void swap (vector& x)
 			{
@@ -393,4 +391,64 @@ namespace ft
 			size_type		_capacity;
 			allocator_type	_alloc;
 	};
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y) {x.swap(y);}
+	template <class InputIterator1, class InputIterator2>
+	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+									InputIterator2 first2, InputIterator2 last2)
+	{
+		while (first1 != last1)
+		{
+			if ((first2 == last2) || (*first1 > *first2)) 
+				return (false);
+			else if (*first1 < *first2)
+				return (true);
+			++first1;
+			++first2;
+		}
+		return (first2 != last2);
+	}
+	template <class InputIterator1, class InputIterator2>
+	bool equal (InputIterator1 first1, InputIterator1 last1,
+				InputIterator2 first2)
+	{
+		while (first1 != last1)
+		{
+			if (*first1 != *first2)
+				return (false);
+			++first1;
+			++first2;
+		}
+		return (true);
+	}
+	template <class T, class Alloc>
+	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+	template <class T, class Alloc>
+	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs == rhs));
+	}
+	template <class T, class Alloc>
+	bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+	template <class T, class Alloc>
+	bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(rhs < lhs));
+	}
+	template <class T, class Alloc>
+	bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
+	template <class T, class Alloc>
+	bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (!(lhs < rhs));
+	}
 }
