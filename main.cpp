@@ -5,23 +5,28 @@
 
 int main()
 {
-	ft::vector<int> myvector;
-	int * p;
-	unsigned int i;
+	std::cout << "is_integral:" << std::endl;
+	std::cout << std::boolalpha;
+	std::cout << "char:  " << ft::is_integral<char>::value << std::endl;
+	std::cout << "int:   " << ft::is_integral<int>::value << std::endl;
+	std::cout << "float: " << ft::is_integral<float>::value << std::endl;
 
-	// allocate an array with space for 5 elements using vector's allocator:
-	p = myvector.get_allocator().allocate(5);
+	ft::vector<int> v1(3, 2);
+	ft::vector<int> v2(v1.begin(), v1.end() - 1);
 
-	// construct values in-place on the array:
-	for (i=0; i<5; i++) myvector.get_allocator().construct(&p[i],i);
-
-	std::cout << "The allocated array contains:";
-	for (i=0; i<5; i++) std::cout << ' ' << p[i];
-	std::cout << '\n';
-
-	// destroy and deallocate:
-	for (i=0; i<5; i++) myvector.get_allocator().destroy(&p[i]);
-	myvector.get_allocator().deallocate(p,5);
-
+	size_t	i = 0;
+	while (i < v1.size())
+	{
+		std::cout << " " << v1[i];
+		i++;
+	}
+	std::cout << std::endl;
+	i = 0;
+	while (i < v2.size())
+	{
+		std::cout << " " << v1[i];
+		i++;
+	}
+	std::cout << std::endl;
 	return 0;
 }

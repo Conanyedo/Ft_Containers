@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/03 18:19:51 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/09 02:23:33 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft
 				_arr = nullptr;
 			}
 			explicit vector (size_type n, const value_type& val = value_type(),
-                			const allocator_type& alloc = allocator_type())
+							const allocator_type& alloc = allocator_type())
 			{
 				_alloc = alloc;
 				_capacity = n;
@@ -59,7 +59,8 @@ namespace ft
 			template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
 					const allocator_type& alloc = allocator_type(),
-					typename enable_if<!is_integral <InputIterator>::value, InputIterator>)
+					typename enable_if<!is_integral <InputIterator>::value, InputIterator>::type * = nullptr)
+					//ANCHOR - SFINAE
 			{
 				size_type	i = -1;
 				_alloc = alloc;
