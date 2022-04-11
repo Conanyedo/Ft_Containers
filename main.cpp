@@ -5,28 +5,28 @@
 
 int main()
 {
-	std::cout << "is_integral:" << std::endl;
-	std::cout << std::boolalpha;
-	std::cout << "char:  " << ft::is_integral<char>::value << std::endl;
-	std::cout << "int:   " << ft::is_integral<int>::value << std::endl;
-	std::cout << "float: " << ft::is_integral<float>::value << std::endl;
+	std::vector<int> vec;
+	ft::vector<int> v;
 
-	ft::vector<int> v1(3, 2);
-	ft::vector<int> v2(v1.begin(), v1.end() - 1);
+	vec.push_back(1);
+	vec.push_back(2);
+	vec.push_back(3);
 
-	size_t	i = 0;
-	while (i < v1.size())
-	{
-		std::cout << " " << v1[i];
-		i++;
-	}
-	std::cout << std::endl;
-	i = 0;
-	while (i < v2.size())
-	{
-		std::cout << " " << v1[i];
-		i++;
-	}
-	std::cout << std::endl;
-	return 0;
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
+
+	std::vector<int>::iterator rit = vec.begin();
+	std::vector<int>::iterator myrit = vec.begin() + 2;
+	std::vector<int>::iterator::difference_type myrit2 = myrit - rit;
+	// ft::vector<int>::iterator rit = v.begin();
+	// ft::vector<int>::iterator myrit = v.begin() + 2;
+	// ft::vector<int>::iterator::difference_type myrit2 = myrit - rit;
+	// ft::vector<int>::reverse_iterator myrit2 = rit + 1;
+
+	// std::cout << *rit << "\n";
+	// std::cout << *myrit << "\n";
+	std::cout << myrit2 << "\n";
+	// std::cout << *rit << "\n";
+
 }

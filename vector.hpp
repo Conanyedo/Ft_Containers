@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/09 02:23:33 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/11 02:34:03 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ namespace ft
 			typedef	typename allocator_type::const_pointer 		const_pointer;
 			typedef	ft::myiterator<pointer>						iterator;
 			typedef	ft::myiterator<const_pointer>				const_iterator;
+			typedef	ft::myreverseiterator<iterator>				reverse_iterator;
+			typedef	ft::myreverseiterator<const_iterator>		const_reverse_iterator;
 			typedef	typename allocator_type::difference_type 	difference_type;
 			typedef	typename allocator_type::size_type 			size_type;
 
@@ -115,6 +117,24 @@ namespace ft
 			{
 				return (const_iterator(_arr + _size));
 			}
+			//NOTE - REVERSE ITERATOR BEGIN AND END
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(end()));
+			}
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(end()));
+			}
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(begin()));
+			}
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(begin()));
+			}
+			
 			size_type size() const {return _size;}
 			size_type max_size() const 
 			{
@@ -188,7 +208,9 @@ namespace ft
 			reference back() {return (_arr[_size - 1]);}
 			const_reference back() const {return (_arr[_size - 1]);}
 			template <class InputIterator>
-			void assign (InputIterator first, InputIterator last)
+			void assign (InputIterator first, InputIterator last,
+						typename enable_if<!is_integral <InputIterator>::value, InputIterator>::type * = nullptr)
+						//ANCHOR - SFINAE
 			{
 				size_type	i = -1;
 				
@@ -302,7 +324,9 @@ namespace ft
 					_arr[pos++] = val;
 			}
 			template <class InputIterator>
-    		void insert (iterator position, InputIterator first, InputIterator last)
+    		void insert (iterator position, InputIterator first, InputIterator last,
+						typename enable_if<!is_integral <InputIterator>::value, InputIterator>::type * = nullptr)
+						//ANCHOR - SFINAE)
 			{
 				pointer		tmp;
 				size_type	cap = _capacity;
