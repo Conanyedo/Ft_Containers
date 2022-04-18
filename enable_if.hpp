@@ -6,11 +6,12 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/02 22:29:19 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/08 02:39:23 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/17 23:21:15 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
+#ifndef ENABLE_IF_HPP
+# define ENABLE_IF_HPP
 
 namespace ft
 {
@@ -76,3 +77,5 @@ namespace ft
 		static const bool value = true;
 	};
 }
+
+#endif
