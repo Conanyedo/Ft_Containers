@@ -1,3 +1,5 @@
 vector
 .DS_Store
 .vscode
+tree.hpp
+outfile
