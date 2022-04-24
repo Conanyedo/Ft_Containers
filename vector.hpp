@@ -6,23 +6,21 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/11 02:34:03 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/17 23:31:48 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include "myiterator.hpp"
 #include "enable_if.hpp"
-#include <iostream>
-#include <vector>
-#include <cmath>
 
 namespace ft
 {
 	template < class T, class Alloc = std::allocator<T> >
 	class vector
 	{
+		//SECTION - MEMBER TYPES
 		public:
-			//SECTION - MEMBER TYPES
 			typedef	T											value_type;
 			typedef	Alloc										allocator_type;
 			typedef	typename allocator_type::reference			reference;
@@ -36,7 +34,15 @@ namespace ft
 			typedef	typename allocator_type::difference_type 	difference_type;
 			typedef	typename allocator_type::size_type 			size_type;
 
-			//SECTION - CONSTRUCTORS - DESTRUCTOR
+		//SECTION - PRIVATE DATA MEMBERS
+		private:
+			pointer			_arr;
+			size_type		_size;
+			size_type		_capacity;
+			allocator_type	_alloc;
+		
+		//SECTION - MEMBER FUNCTIONS
+		public:
 			explicit vector (const allocator_type& alloc = allocator_type())
 			{
 				_alloc = alloc;
@@ -409,13 +415,8 @@ namespace ft
 			}
 			allocator_type get_allocator() const {return (this->_alloc);}
 		
-		//SECTION - DATA MEMBERS
-		private:
-			pointer			_arr;
-			size_type		_size;
-			size_type		_capacity;
-			allocator_type	_alloc;
 	};
+	//SECTION - NON MEMBER FUNCTION OVERLOADS
 	template <class T, class Alloc>
 	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y) {x.swap(y);}
 	template <class InputIterator1, class InputIterator2>
