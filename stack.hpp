@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/11 02:38:49 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/11 18:03:25 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/17 23:25:20 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ namespace ft
 	template <class T, class Container = ft::vector<T> >
 	class stack
 	{
+		//SECTION - MEMBER TYPES
 		public:
 			typedef	Container								container_type;
 			typedef	typename container_type::value_type		value_type;
@@ -27,6 +28,7 @@ namespace ft
 		protected:
 			container_type c;
 		public:
+			//SECTION - MEMBER FUNCTIONS
 			explicit stack (const container_type& ctnr = container_type()) : c(ctnr)
 			{
 			}
@@ -43,6 +45,7 @@ namespace ft
 				this->c.pop_back();
 			}
 	};
+	//SECTION - NON MEMBER FUNCTION OVERLOADS
 	template <class T, class Container>
 	bool operator== (const stack<T,Container>& lhs, const stack<T,Container>& rhs)
 	{
