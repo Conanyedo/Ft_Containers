@@ -2,7 +2,8 @@
 #include <vector>
 #include <cmath>
 #include "vector.hpp"
-#include "tree.hpp"
+#include <map>
+// #include "tree.hpp"
 #include "BST.hpp"
 
 int main()

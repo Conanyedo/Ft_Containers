@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: conanyedo <conanyedo@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/17 23:32:01 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/18 02:00:47 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/30 00:27:48 by conanyedo        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,16 @@ namespace ft
 			typedef	typename allocator_type::size_type 				size_type;
 			
 		private:
-			allocator_type _alloc;
+			allocator_type	_alloc;
+			key_compare		_cmp;
+		public:
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _cmp(comp), _alloc(alloc) {}
+			template <class InputIterator>
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
+				const allocator_type& alloc = allocator_type())
+			{
+				
+			}
 	};
 }
 

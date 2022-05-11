@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BST.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: conanyedo <conanyedo@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 17:00:43 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/24 22:15:30 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/04/27 01:41:09 by conanyedo        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class BBST
 				return false;
 			}
 		};
-		int		nodecount;
 		Node	*root;
+		int		nodecount;
 		int		length;
 	
 	public:
