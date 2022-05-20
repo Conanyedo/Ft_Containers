@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BST.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: conanyedo <conanyedo@student.42.fr>        +#+  +:+       +#+        */
+/*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/21 17:00:43 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/27 01:41:09 by conanyedo        ###   ########.fr       */
+/*   Updated: 2022/05/18 19:29:26 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,17 @@ class BBST
 			T		data;
 			int		balanceFactor;
 			int		height;
+			Node	*parent;
 			Node	*left;
 			Node	*right;
-			Node(T data) : data(data), balanceFactor(0), height(0), left(NULL), right(NULL) {}
-			bool	find(T value)
-			{
-				if (value == data)
-					return true;
-				else if (value < data && left)
-					return left->find(value);
-				else if (value > data && right)
-					return right->find(value);
-				return false;
-			}
+			Node(T data) : data(data), balanceFactor(0), height(0), parent(nullptr), left(nullptr), right(nullptr) {}
 		};
 		Node	*root;
 		int		nodecount;
 		int		length;
 	
 	public:
-		BBST() : root(NULL), nodecount(0), length(0) {}
+		BBST() : root(nullptr), nodecount(0), length(0) {}
 		int		getLenght(int data)
 		{
 			return (std::to_string(data).length());
@@ -65,42 +56,69 @@ class BBST
 		{
 			return (nodecount);
 		}
-		bool	find(T value)
+		Node	*&find(T value)
 		{
-			if (!root)
-				return false;
-			return root->find(value);
+			return find(value, root);
+		}
+		Node	*find(T value, Node *node)
+		{
+			if (node)
+			{
+				if (value == node->data)
+					return node;
+				else if (value < node->data)
+					return find(value, node->left);
+				return find(value, node->right);
+			}
+			return (node);
+		}
+		void	clear()
+		{
+			root = clear(root);
+			nodecount = 0;
+		}
+		Node	*clear(Node *node)
+		{
+			if (node)
+			{
+				node->left = clear(node->left);
+				node->right = clear(node->right);
+				delete node;
+			}
+			return (nullptr);
 		}
 		bool	insert(T value)
 		{
-			if (!root)
-				length = 0;
-			if (!find(value))
-			{
-				root = inserting(root, value);
-				nodecount++;
-				if (length < getLenght(value))
-					length = getLenght(value);
-				return true;
-			}
-			return false;
+			inserting(value, root);
+			nodecount++;
+			if (length < getLenght(value))
+				length = getLenght(value);
+			return true;
 		}
-		Node	*inserting(Node *node, T value)
+		void	inserting(T data, Node *&node, Node *parent = nullptr)
 		{
 			if (!node)
-				return (new Node(value));
-			if (value <= node->data)
-				node->left = inserting(node->left, value);
+			{
+				node = new Node(data);
+				node->parent = parent;
+				return ;
+			}
+			if (node->data == data)
+				return ;
+			if (data < node->data)
+				inserting(data, node->left, node);
 			else
-				node->right = inserting(node->right, value);
+				inserting(data, node->right, node);
 			update(node);
-			return balance(node);
+			balance(node);
 		}
 		void	update(Node *node)
 		{
+			if (!node)
+				return ;
 			int	leftNodeHeight = -1;
 			int	rightNodeHeight = -1;
-			
+
 			if (node->left)
 				leftNodeHeight = node->left->height;
 			if (node->right)
@@ -110,117 +128,153 @@ class BBST
 			node->height = 1 + diff;
 			node->balanceFactor = rightNodeHeight - leftNodeHeight;
 		}
-		Node	*balance(Node *node)
+		void	balance(Node *&node)
 		{
+			if (!node)
+				return ;
 			if (node->balanceFactor < -1)
 			{
 				if (node->left->balanceFactor <= 0)
-					return leftLeftCase(node);
-				return leftRightCase(node);	
+					leftLeftCase(node);
+				else
+					leftRightCase(node);	
 			}
 			else if (node->balanceFactor > 1)
 			{
 				if (node->right->balanceFactor >= 0)
-					return rightRightCase(node);
-				return rightLeftCase(node);
+					rightRightCase(node);
+				else
+					rightLeftCase(node);
 			}
-			return (node);
 		}
-		Node	*leftRotation(Node *node)
+		void	leftRotation(Node *&node)
 		{
-			Node	*parent = node->right;
-			node->right = parent->left;
-			parent->left = node;
+			Node*	parent =node->parent;
+			Node*	root = node->right;
+			node->right = root->left;
+			node->parent = root;
+			root->left = node;
+			root->parent = parent;
+			node = root;
+			update(node->left);
 			update(node);
-			update(parent);
-			return (parent);
-		}		
-		Node	*rightRotation(Node *node)
+		}
+		void	rightRotation(Node *&node)
 		{
-			Node	*parent = node->left;
-			node->left = parent->right;
-			parent->right = node;
+			Node*	parent = node->parent;
+			Node*	root = node->left;
+			node->left = root->right;
+			node->parent = root;
+			root->right = node;
+			root->parent = parent;
+			node = root;
+			update(node->right);
 			update(node);
-			update(parent);
-			return (parent);
-		}		
-		Node	*leftLeftCase(Node *node)
-		{
-			return rightRotation(node);
 		}
-		Node	*leftRightCase(Node *node)
+		void	leftLeftCase(Node *&node)
 		{
-			node->left = leftRotation(node->left);
-			return rightRotation(node);
+			rightRotation(node);
 		}
-		Node	*rightRightCase(Node *node)
+		void	leftRightCase(Node *&node)
 		{
-			return leftRotation(node);
+			leftRotation(node->left);
+			rightRotation(node);
 		}
-		Node	*rightLeftCase(Node *node)
+		void	rightRightCase(Node *&node)
 		{
-			node->right = rightRotation(node->right);
-			return leftRotation(node);
+			leftRotation(node);
 		}
-		bool	remove(T value)
+		void	rightLeftCase(Node *&node)
 		{
-			if (find(value))
-			{
-				root = removing(root, value);
-				nodecount--;
-				return (true);
-			}
-			return (false);
+			rightRotation(node->right);
+			leftRotation(node);
 		}
 		T	findMax(Node *node)
 		{
-			while (!node->right)
+			while (node->right)
 				node = node->right;
 			return (node->data);
 		}
 		T	findMin(Node *node)
 		{
-			while (!node->left)
+			while (node->left)
 				node = node->left;
 			return (node->data);
 		}
-		Node	*removing(Node *node,T value)
+		bool	remove(T value)
 		{
-			if (!node)
-				return (NULL);
-			if (value < node->data)
-				node->left = removing(node->left, value);
-			else if (value > node->data)
-				node->right = removing(node->right, value);
+			int oldcount = nodecount;
+			removing(root, value);
+			return ((oldcount != nodecount) ? true : false);
+		}
+		void	removingHelper(Node	*&node, Node *parent)
+		{
+			Node* tmp;
+			if (!parent)
+			{
+				if (node->left)
+					tmp = node->left;
+				else
+					tmp = node->right;
+				delete node;
+				node = tmp;
+				root = node;
+				if (root)
+					root->parent = nullptr;
+			}
 			else
 			{
-				if (!node->left)
-					return (node->right);
-				else if (!node->right)
-					return (node->left);
+				if (node->right)
+					tmp = node->right;
+				else
+					tmp = node->left;
+				if (tmp)
+					tmp->parent = parent;
+				delete node;
+				node = tmp;
+			}
+			nodecount--;
+		}
+		void	removing(Node *&node, T value)
+		{
+			if (!node)
+				return ;
+			if (value == node->data)
+			{
+				if (!node->left || !node->right)
+				{
+					removingHelper(node, node->parent);
+					return ;
+				}
 				else
 				{
 					if (node->left->height > node->right->height)
 					{
 						node->data = findMax(node->left);
-						node->left = removing(node->left, node->data);
+						removing(node->left, node->data);
 					}
 					else
 					{
 						node->data = findMin(node->right);
-						node->right = removing(node->right, node->data);
+						removing(node->right, node->data);
 					}
 				}
 			}
+			else if (value < node->data)
+				removing(node->left, value);
+			else
+				removing(node->right, value);
 			update(node);
-			return (balance(node));
+			balance(node);
 		}
 		void	print()
 		{
 			if (!root)
+			{
+				std::cout << "tree khawya\n";
 				return ;
-			std::cout << "| number of nodes : " << nodecount << " | tree height: " << root->height << " |\n";
-			std::cout << "lenght : " << length << " |\n";
+			}
+			std::cout << "|number of nodes : " << nodecount << " | tree height: " << root->height << " |\n";
 			// printing(root);
 			levelOrder(root);
 		}
@@ -298,96 +352,6 @@ class BBST
 				childs--;
 			}
 		}
-		/*
-		void	levelOrder(Node *node)
-		{
-			std::ofstream	outfile("outfile");
-			std::queue<Node *> q;
-			Node	*empty = new Node(T());
-			int	spaces = 0;
-			int	oldSpaces = 0;
-			int	currentSpaces = 0;
-			int	level = 0;
-			int	childs = 0;
-			int	first = 1;
-			int	repeat;
-
-			q.push(root);
-			while (level <= root->height)
-			{
-				Node *current = q.front();
-				if (current->left)
-					q.push(current->left);
-				else
-					q.push(empty);
-				if (current->right)
-					q.push(current->right);
-				else
-					q.push(empty);
-				q.pop();
-				if (first)
-				{
-					spaces = pow(2, ((node->height + length) - level));
-					currentSpaces = spaces;
-					if (!level)
-						std::cout << "spaces : " << spaces << " | height : " << node->height << " |\n";
-					// if (current && (current->data >= 10))
-					// 	spaces--;
-					while (spaces--)
-						outfile << " ";
-					if (level)
-					{
-						spaces = oldSpaces + 1;
-						repeat = pow(2, level);
-						while (--repeat)
-						{
-							if (repeat % 2)
-							{
-								spaces = oldSpaces + 1 - 2;
-								outfile << "+";
-								while (spaces--)
-									outfile << "-";
-								outfile << "+";
-								
-							}
-							else
-							{
-								spaces = oldSpaces - 1;
-								while (spaces--)
-									outfile << " ";
-								
-							}
-						}
-						outfile << "\n";
-						spaces = currentSpaces - 1;
-						while (spaces--)
-							outfile << " ";
-					}
-					outfile << "(" << current->data  << ")";
-				}
-				else
-				{
-					spaces = oldSpaces - 1;
-					// if (current && (current->data >= 10))
-					// 	spaces--;
-					spaces -= 2;
-					while (spaces--)
-						outfile << " ";
-					outfile << "(" << current->data << ")";
-				}
-				first = 0;
-				if (!childs)
-				{
-					level++;
-					first = 1;
-					oldSpaces = currentSpaces;
-					childs = std::pow(2, level);
-					outfile << "\n";
-				}
-				childs--;
-			}
-		}
-		*/
 		void	printing(Node *node)
 		{
 			if (node->left)
