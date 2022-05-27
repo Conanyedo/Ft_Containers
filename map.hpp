@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/17 23:32:01 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/27 11:31:15 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 20:39:44 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,7 @@ namespace ft
 					insert(x.begin(), x.end());
 				return *this;
 			}
-			~map()
-			{
-				_tree.clear();
-			}
+			~map() {}
 
 			//SECTION - MEMBER FUCTIONS
 			iterator begin()
@@ -139,11 +136,12 @@ namespace ft
 			
 			mapped_type& operator[] (const key_type& k)
 			{
-				nodePtr	node = _tree.find(ft::make_pair(k, mapped_type()));
-				if (!node)
+				value_type data = ft::make_pair(k, mapped_type());
+				nodePtr	node = _tree.find(data);
+				if (node == _tree.getEnd())
 				{
-					_tree.insert(make_pair(k, mapped_type()));
-					node = _tree.find(ft::make_pair(k, mapped_type()));
+					_tree.insert(data);
+					node = _tree.find(data);
 				}
 				return (node->data.second);
 			}
@@ -151,7 +149,7 @@ namespace ft
 			{
 				nodePtr	node = _tree.find(val);
 				bool	notInserted = false;
-				if (!node)
+				if (node == _tree.getEnd())
 				{
 					_tree.insert(val);
 					node = _tree.find(val);
@@ -163,7 +161,7 @@ namespace ft
 			{
 				static_cast<void>(position);
 				nodePtr	node = _tree.find(val);
-				if (!node)
+				if (node == _tree.getEnd())
 				{
 					_tree.insert(val);
 					node = _tree.find(val);
@@ -183,35 +181,46 @@ namespace ft
 			{
 				nodePtr node = position.base();
 				if (node)
-					_tree.erase(node);
+					_tree.erase(*position);
 			}
 			size_type erase (const key_type& k)
 			{
 				nodePtr node = _tree.find(ft::make_pair(k, mapped_type()));
-				if (!node)
+				if (node == _tree.getEnd())
 					return (0);
-				_tree.erase(node);
+				_tree.erase(node->data);
 				return (1);
+			}
+			void	print()
+			{
+				_tree.print();
 			}
 			void erase (iterator first, iterator last)
 			{
+				iterator tmp;
+				key_type fkey;
+				key_type lkey;
 				while (first != last)
 				{
-					erase(first);
-					first++;
+					tmp = first++;
+					if (first == iterator(_tree.getEnd()))
+						return ;
+					fkey = first->first;
+					lkey = last->first;
+					erase(tmp);
+					first = find(fkey);
+					last = find(lkey);
 				}
 			}
 			void swap (map& x)
 			{
 				allocator_type	alloc = x.get_allocator();
 				key_compare		cmp = x._cmp;
-				tree			tree = x._tree;
 				x._alloc = this->get_allocator();
 				x._cmp = this->_cmp;
-				x._tree = this->_tree;
 				this->_alloc = alloc;
 				this->_cmp = cmp;
-				this->_tree = tree;
+				_tree.swap(x._tree);
 			}
 			iterator find (const key_type& k)
 			{
@@ -227,7 +236,7 @@ namespace ft
 			{
 				nodePtr	node = _tree.find(ft::make_pair(k, mapped_type()));
 				
-				if (!node)
+				if (node == _tree.getEnd())
 					return (0);
 				return (1);
 			}
@@ -237,27 +246,39 @@ namespace ft
 			}
 			value_compare value_comp() const
 			{
-				return (value_comp());
+				return (value_compare(_cmp));
 			}
 			iterator lower_bound (const key_type& k)
 			{
 				iterator it = find(k);
+				if (it.base() == _tree.getEnd())
+					it = iterator(_tree.lowerBound(ft::make_pair(k, mapped_type())));
 				return (it);
 			}
 			const_iterator lower_bound (const key_type& k) const
 			{
 				const_iterator cit = find(k);
+				if (cit.base() == _tree.getEnd())
+					cit = const_iterator(_tree.lowerBound(ft::make_pair(k, mapped_type())));
 				return (cit);
 			}
 			iterator upper_bound (const key_type& k)
 			{
 				iterator it = find(k);
-				return (++it);
+				if (it.base() != _tree.getEnd())
+					++it;
+				else
+					it = iterator(_tree.upperBound(ft::make_pair(k, mapped_type())));
+				return (it);
 			}
 			const_iterator upper_bound (const key_type& k) const
 			{
 				const_iterator cit = find(k);
-				return (++cit);
+				if (cit.base() != _tree.getEnd())
+					++cit;
+				else
+					cit = const_iterator(_tree.upperBound(ft::make_pair(k, mapped_type())));
+				return (cit);
 			}
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
