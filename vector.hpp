@@ -6,9 +6,12 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/27 11:30:51 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 16:47:20 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef VECTOR_HPP
+# define VECTOR_HPP
 
 #include <iostream>
 #include "myiterator.hpp"
@@ -44,12 +47,8 @@ namespace ft
 		
 		//SECTION - MEMBER FUNCTIONS
 		public:
-			explicit vector (const allocator_type& alloc = allocator_type())
+			explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(0), _size(0), _arr(nullptr)
 			{
-				_alloc = alloc;
-				_capacity = 0;
-				_size = 0;
-				_arr = nullptr;
 			}
 			explicit vector (size_type n, const value_type& val = value_type(),
 							const allocator_type& alloc = allocator_type())
@@ -82,7 +81,7 @@ namespace ft
 					first++;
 				}
 			}
-			vector (const vector& x)
+			vector (const vector& x) : _capacity(0), _size(0), _arr(nullptr)
 			{
 				*this = x;
 			}
@@ -230,7 +229,7 @@ namespace ft
 				}
 				else
 				{
-					_alloc.dealloacte(_arr, _capacity);
+					_alloc.deallocate(_arr, _capacity);
 					_capacity = _size;
 					_arr = _alloc.allocate(_capacity);
 					while (++i < _size)
@@ -249,7 +248,7 @@ namespace ft
 				}
 				else
 				{
-					_alloc.dealloacte(_arr, _capacity);
+					_alloc.deallocate(_arr, _capacity);
 					_capacity = _size;
 					_arr = _alloc.allocate(_capacity);
 					while (++i < _size)
@@ -452,7 +451,7 @@ namespace ft
 	template <class T, class Alloc>
 	bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
 	{
-		return (equal(lhs.begin(), lhs.end(), rhs.begin()));
+		return (equal(lhs.begin(), lhs.end(), rhs.begin()) && (lhs.size() == rhs.size()));
 	}
 	template <class T, class Alloc>
 	bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
@@ -480,3 +479,5 @@ namespace ft
 		return (!(lhs < rhs));
 	}
 }
+
+#endif
