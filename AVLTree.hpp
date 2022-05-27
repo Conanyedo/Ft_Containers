@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 02:38:59 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/05/27 11:29:59 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 20:29:17 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 # define AVLTREE_HPP
 
 #include <iostream>
+#include <queue>
+#include <fstream>
+#include <iomanip>
+#include <cmath>
 
 namespace ft
 {
@@ -50,18 +54,26 @@ namespace ft
 			allocator_type	_alloc;
 			key_compare		_cmp;
 			size_type		_size;
+			int		length;
 		
 		public:
 			AVLTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : _root(nullptr), _end(nullptr), _alloc(alloc), _cmp(cmp), _size(0)
 			{
+				length = 0;
 				_end = _alloc.allocate(1);
 				_alloc.construct(_end);
+			}
+			~AVLTree()
+			{
+				clear();
+				_alloc.deallocate(_end, 1);
+				_end = nullptr;
 			}
 			size_type size() const {return _size;}
 			size_type max_size() const {return _alloc.max_size();}
 			allocator_type get_allocator() const {return (this->_alloc);}
 			nodePtr	getEnd() const {return (this->_end);}
-			nodePtr	getMin(nodePtr node = nullptr)
+			nodePtr	getMin(nodePtr node = nullptr) const
 			{
 				if (!node)
 					node = _root;
@@ -77,22 +89,70 @@ namespace ft
 					node = node->right;
 				return node;
 			}
+			nodePtr	lowerBound(const value_type& data)
+			{
+				nodePtr node = getMin();
+                while (node != _end)
+                {
+                    if (!_cmp(node->data.first, data.first))
+                        return (node);
+                    node = successor(node);
+                }
+                return (_end);
+			}
+			nodePtr	upperBound(const value_type& data)
+			{
+				nodePtr node = getMin();
+                while (node != _end)
+                {
+                    if (_cmp(data.first, node->data.first))
+                        return (node);
+                    node = successor(node);
+                }
+                return (_end);
+			}
+			void	swap(AVLTree& tree)
+			{
+				nodePtr			root = _root;
+				nodePtr			end = _end;
+				allocator_type	alloc = _alloc;
+				key_compare		cmp = _cmp;
+				size_type		size = _size;
+
+				_root = tree._root;
+				_end = tree._end;
+				_alloc = tree._alloc;
+				_cmp = tree._cmp;
+				_size = tree._size;
+				
+				tree._root = root;
+				tree._end = end;
+				tree._alloc = alloc;
+				tree._cmp = cmp;
+				tree._size = size;
+			}
 			void	clear()
 			{
 				clear(_root);
 				_size = 0;
 			}
-			nodePtr	find(value_type pair)
+			nodePtr	find(const value_type& data)
 			{
-				return find(pair, _root);
+				return find(data, _root);
 			}
-			void	insert(value_type data)
+			void	insert(const value_type& data)
 			{
 				insert(data, _root, _end);
+				if (length < getLenght(data.first))
+					length = getLenght(data.first);
 			}
-			void	erase(nodePtr node)
+			void	erase(const value_type& data)
 			{
-				erase(_root, node->data);
+				erase(_root, data);
+			}
+			void	print()
+			{
+				levelOrder();
 			}
 		private:
 			void	eraseHelper(nodePtr &node, nodePtr& parent)
@@ -110,7 +170,7 @@ namespace ft
 				_end->left = _root;
 				_size--;
 			}
-			void	erase (nodePtr &node, value_type& data)
+			void	erase (nodePtr &node, const value_type& data)
 			{
 				if (!node)
 					return ;
@@ -125,15 +185,15 @@ namespace ft
 					{
 						if (node->left->height > node->right->height)
 						{
-							value_type value = getMax(node->left)->data;
+							value_type value(getMax(node->left)->data);
 							_alloc.construct(node, value);
 							erase(node->left, value);
 						}
 						else
 						{
-							value_type value = getMin(node->right)->data;
+							value_type value(getMin(node->right)->data);
 							_alloc.construct(node, value);
-							erase(node->right, node->data);
+							erase(node->right, value);
 						}
 					}
 				}
@@ -144,7 +204,7 @@ namespace ft
 				update(node);
 				balance(node);
 			}
-			void	insert(value_type& data, nodePtr &node, nodePtr& parent)
+			void	insert(const value_type& data, nodePtr &node, nodePtr& parent)
 			{
 				if (!node)
 				{
@@ -165,17 +225,38 @@ namespace ft
 				update(node);
 				balance(node);
 			}
-			nodePtr	find(value_type& pair, nodePtr& node)
+			nodePtr	find(const value_type& data, nodePtr& node)
 			{
 				if (node)
 				{
-					if (pair.first == node->data.first)
+					if (data.first == node->data.first)
 						return (node);
-					if (_cmp(pair.first, node->data.first))
-						return (find(pair, node->left));
-					return (find(pair, node->right));
+					if (_cmp(data.first, node->data.first))
+						return (find(data, node->left));
+					return (find(data, node->right));
 				}
-				return (nullptr);
+				return (_end);
+			}
+			nodePtr	successor(nodePtr node)
+			{
+				nodePtr	parent = node->parent;
+				nodePtr	tmp = node;
+				if (tmp->right)
+				{
+					tmp = tmp->right;
+					while (tmp->left)
+						tmp = tmp->left;
+					return tmp;
+				}
+				else
+				{
+					while (parent && tmp == parent->right)
+					{
+						tmp = parent;
+						parent = tmp->parent;
+					}
+					return (parent);
+				}
 			}
 			void	clear(nodePtr &node)
 			{
@@ -262,6 +343,96 @@ namespace ft
 			{
 				rightRotation(node->right);
 				leftRotation(node);
+			}
+			int		getLenght(int data)
+			{
+				return (std::to_string(data).length());
+			}
+			int		getLenght(std::string data)
+			{
+				return (data.length());
+			}
+			int		getLenght(char data)
+			{
+				data = 'a';
+				return (1);
+			}
+			void	levelOrder()
+			{
+				nodePtr node = _root;
+				std::ofstream	outfile("outfile", std::ios_base::app);
+				outfile << "\n";
+				std::queue<nodePtr > q;
+				nodePtr empty = _alloc.allocate(1);
+				_alloc.construct(empty);
+				int	spaces = 0;
+				int	currentSpaces = 0;
+				int	level = 0;
+				int	childs = 0;
+				int	repeat;
+				int	height = _root->height;
+				length += 2;
+
+				q.push(_root);
+				while (height >= 0)
+				{
+					nodePtr current = q.front();
+					if (current->left)
+						q.push(current->left);
+					else
+						q.push(empty);
+					if (current->right)
+						q.push(current->right);
+					else
+						q.push(empty);
+					q.pop();
+					currentSpaces = (std::pow(2, height) * length) - length;
+					if (level && (childs == (std::pow(2, level) - 1)))
+					{
+						repeat = pow(2, level);
+						spaces = currentSpaces;
+						while (spaces--)
+							outfile << " ";
+						while (--repeat)
+						{
+							if (repeat % 2)
+							{
+								spaces = (currentSpaces * 2) + (length * 3) - 2;
+								outfile << "+";
+								while (spaces--)
+									outfile << "-";
+								outfile << "+";
+							}
+							else
+							{
+								spaces = (currentSpaces * 2) + (length * 1);
+								while (spaces--)
+									outfile << " ";
+							}
+						}
+						outfile << "\n";
+					}
+					spaces = currentSpaces;
+					while (spaces--)
+						outfile << " ";
+					outfile << "(";
+					repeat = (length - 2) - getLenght(current->data.first);
+					while (repeat--)
+						outfile << " ";
+					outfile << current->data.first;
+					outfile << ")";
+					spaces = currentSpaces + length;
+					while (childs && spaces--)
+						outfile << " ";
+					if (!childs)
+					{
+						height--;
+						level++;
+						childs = std::pow(2, level);
+						outfile << "\n";
+					}
+					childs--;
+				}
 			}
 	};
 }
