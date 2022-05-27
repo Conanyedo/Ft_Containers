@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/27 10:58:46 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 11:30:51 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "myiterator.hpp"
 #include "reverseIterator.hpp"
 #include "enable_if.hpp"
-#include <cmath>
 
 namespace ft
 {
