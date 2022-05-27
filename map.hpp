@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/17 23:32:01 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/20 20:08:45 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/21 22:44:49 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MAP_HPP
 
 #include <iostream>
+#include "reverseIterator.hpp"
 #include "pair.hpp"
 #include "binarySearchTree.hpp"
 #include "map_iterator.hpp"
@@ -53,8 +54,8 @@ namespace ft
 			typedef typename tree::nodePtr							nodePtr;
 			typedef	ft::mapiterator<pointer, nodePtr>				iterator;
 			typedef	ft::mapiterator<const_pointer, nodePtr>			const_iterator;
-			typedef	ft::mapreverseiterator<pointer, nodePtr>		reverse_iterator;
-			typedef	ft::mapreverseiterator<const_pointer, nodePtr>	const_reverse_iterator;
+			typedef	ft::reverseiterator<iterator>					reverse_iterator;
+			typedef	ft::reverseiterator<iterator>					const_reverse_iterator;
 			typedef	typename allocator_type::difference_type 		difference_type;
 			typedef	typename allocator_type::size_type 				size_type;
 		
@@ -106,40 +107,28 @@ namespace ft
 			}
 			iterator end()
 			{
-				nodePtr	node = _tree.getMax();
-				iterator it = iterator(node);
-				++it;
-				return (it);
+				return (iterator(_tree.getEnd()));
 			}
 			const_iterator end() const
 			{
-				nodePtr	node = _tree.getMax();
-				const_iterator cit = const_iterator(node);
-				++cit;
-				return (cit);
+				return (const_iterator(_tree.getEnd()));
 			}
 			//NOTE - REVERSE ITERATOR BEGIN AND END
 			reverse_iterator rbegin()
 			{
-				return (reverse_iterator(_tree.getMax()));
+				return (reverse_iterator(this->end()));
 			}
 			const_reverse_iterator rbegin() const
 			{
-				return (const_reverse_iterator(_tree.getMax()));
+				return (const_reverse_iterator(this->end()));
 			}
 			reverse_iterator rend()
 			{
-				nodePtr	node = _tree.getMin();
-				reverse_iterator rit = reverse_iterator(node);
-				++rit;
-				return (rit);
+				return (reverse_iterator(this->begin()));
 			}
 			const_reverse_iterator rend() const
 			{
-				nodePtr	node = _tree.getMin();
-				const_reverse_iterator crit = reverse_iterator(node);
-				++crit;
-				return (crit);
+				return (const_reverse_iterator(this->begin()));
 			}
 
 			allocator_type get_allocator() const {return (this->_alloc);}
@@ -154,7 +143,7 @@ namespace ft
 				if (!node)
 				{
 					_tree.insert(make_pair(k, mapped_type()));
-					node = _tree.find(make_pair(k, mapped_type()));
+					node = _tree.find(ft::make_pair(k, mapped_type()));
 				}
 				return (node->data.second);
 			}
@@ -168,7 +157,7 @@ namespace ft
 					node = _tree.find(val);
 					notInserted = true;
 				}
-				return (make_pair(iterator(node), notInserted));
+				return (ft::make_pair(iterator(node), notInserted));
 			}
 			iterator insert (iterator position, const value_type& val)
 			{
@@ -198,7 +187,7 @@ namespace ft
 			}
 			size_type erase (const key_type& k)
 			{
-				nodePtr node = _tree.find(make_pair(k, mapped_type()));
+				nodePtr node = _tree.find(ft::make_pair(k, mapped_type()));
 				if (!node)
 					return (0);
 				_tree.erase(node);
@@ -226,17 +215,17 @@ namespace ft
 			}
 			iterator find (const key_type& k)
 			{
-				nodePtr	node = _tree.find(make_pair(k, mapped_type()));
+				nodePtr	node = _tree.find(ft::make_pair(k, mapped_type()));
 				return (iterator(node));
 			}
 			const_iterator find (const key_type& k) const
 			{
-				nodePtr	node = _tree.find(make_pair(k, mapped_type()));
+				nodePtr	node = _tree.find(ft::make_pair(k, mapped_type()));
 				return (const_iterator(node));
 			}
 			size_type count (const key_type& k) const
 			{
-				nodePtr&	node = _tree.find(make_pair(k, mapped_type()));
+				nodePtr	node = _tree.find(ft::make_pair(k, mapped_type()));
 				
 				if (!node)
 					return (0);
@@ -272,11 +261,11 @@ namespace ft
 			}
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
-				return (make_pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k)));
+				return (ft::make_pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k)));
 			}
 			pair<iterator,iterator>             equal_range (const key_type& k)
 			{
-				return (make_pair<iterator,iterator>(lower_bound(k), upper_bound(k)));
+				return (ft::make_pair<iterator,iterator>(lower_bound(k), upper_bound(k)));
 			}
 	};
 }
