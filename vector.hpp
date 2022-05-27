@@ -6,13 +6,15 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/04/17 23:31:48 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 10:58:46 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include "myiterator.hpp"
+#include "reverseIterator.hpp"
 #include "enable_if.hpp"
+#include <cmath>
 
 namespace ft
 {
@@ -29,8 +31,8 @@ namespace ft
 			typedef	typename allocator_type::const_pointer 		const_pointer;
 			typedef	ft::myiterator<pointer>						iterator;
 			typedef	ft::myiterator<const_pointer>				const_iterator;
-			typedef	ft::myreverseiterator<iterator>				reverse_iterator;
-			typedef	ft::myreverseiterator<const_iterator>		const_reverse_iterator;
+			typedef	ft::reverseiterator<iterator>				reverse_iterator;
+			typedef	ft::reverseiterator<const_iterator>			const_reverse_iterator;
 			typedef	typename allocator_type::difference_type 	difference_type;
 			typedef	typename allocator_type::size_type 			size_type;
 
@@ -144,8 +146,9 @@ namespace ft
 			size_type size() const {return _size;}
 			size_type max_size() const 
 			{
-				size_type ret = std::pow(2,64)/sizeof(T);
-				return (ret - 1);
+				// size_type ret = std::pow(2,64)/sizeof(T) - 1;
+				size_type ret = _alloc.max_size();
+				return (ret);
 			}
 			size_type capacity() const {return _capacity;}
 			reference operator[] (size_type n) {return (_arr[n]);}
