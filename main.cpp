@@ -27,33 +27,43 @@
 // }
 
 
+#include <iostream> 
 #include "map.hpp"
-#include <iostream>
+#include "vector.hpp"
 #include <map>
+#include <vector>
+#include <utility>
 
 int main ()
 {
-	ft::map<char,int> mymap;
+	// ft::map<char,int> mymap;
+	// ft::map<char,int> mymap1;
 
-	mymap['a']=10;
-	mymap['b']=20;
-	mymap['c']=30;
+	// mymap['a']=10;
+	// mymap['b']=20;
+	// mymap['c']=30;
 
-	// ft::map<char,int>::reverse_iterator it = mymap.rbegin();
-	// ft::map<char,int>::reverse_iterator ti = mymap.rend();
-	// while (it != ti)
+	// ft::map<char,int>::iterator it = mymap.begin();
+	// ft::map<char,int>::iterator ti = mymap.end();
+	// mymap1.insert(it, ti);
+
+	// ft::map<char,int>::iterator ti1 = mymap1.end();
+	// ft::map<char,int>::iterator it1 = mymap1.begin();
+	// ft::pair<char, int> pr = ft::make_pair('d', 40);
+	// mymap1.insert(pr);
+	// while (it1 != ti1)
 	// {
-	// 	std::cout << "| " << it->first << " = " << (*it).second << " |\n";
-	// 	it++;
+	// 	std::cout << "| " << it1->first << " = " << (*it1).second << " |\n";
+	// 	it1++;
 	// }
-	ft::pair<ft::map<char,int>::iterator,ft::map<char,int>::iterator> ret;
-	ret = mymap.equal_range('b');
+	// // ft::pair<ft::map<char,int>::iterator,ft::map<char,int>::iterator> ret;
+	// // ret = mymap.equal_range('b');
 
-	std::cout << "lower bound points to: ";
-	std::cout << ret.first->first << " => " << ret.first->second << '\n';
+	// // std::cout << "lower bound points to: ";
+	// // std::cout << ret.first->first << " => " << ret.first->second << '\n';
 
-	std::cout << "upper bound points to: ";
-	std::cout << ret.second->first << " => " << ret.second->second << '\n';
+	// // std::cout << "upper bound points to: ";
+	// // std::cout << ret.second->first << " => " << ret.second->second << '\n';
 
 	return 0;
 }
