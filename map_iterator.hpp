@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 03:18:48 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/05/27 11:18:33 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 11:20:56 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@
 
 namespace ft
 {
+	//SECTION - ITERATOR
 	template <class T, class nodePtr>
 	class mapiterator
 	{
+		//SECTION - MEMBER TYPES
 		public:
 			typedef typename iterator_traits<T>::difference_type  	difference_type;
 			typedef typename iterator_traits<T>::value_type  		value_type;
@@ -30,6 +32,7 @@ namespace ft
 		
 		private:
 			nodePtr	node;
+		//SECTION - MEMBER FUNCTIONS
 		public:
 			mapiterator() : node(nullptr) {}
 			explicit mapiterator(nodePtr ptr) : node(ptr) {}
@@ -104,6 +107,7 @@ namespace ft
 				}
 			}
 	};
+	//SECTION - NON MEMBER FUNCTION OVERLOADS
 	template <class Iter, class nodeptr>
 	bool operator== (const mapiterator<Iter, nodeptr>& lhs,
 					const mapiterator<Iter, nodeptr>& rhs)
