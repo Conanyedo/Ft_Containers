@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 03:18:48 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/05/27 11:20:56 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/05/27 18:44:39 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ namespace ft
 			mapiterator operator++(int)
 			{
 				mapiterator tmp(*this);
-				++node;
+				++(*this);
 				return (tmp);
 			}
 			mapiterator& operator--()
@@ -60,7 +60,7 @@ namespace ft
 			mapiterator operator--(int)
 			{
 				mapiterator tmp(*this);
-				--node;
+				--(*this);
 				return (tmp);
 			}
 		private:
