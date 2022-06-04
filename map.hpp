@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/17 23:32:01 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/27 20:39:44 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/04 19:10:20 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ namespace ft
 		
 		//SECTION - PRIVATE DATA MEMBERS
 		private:
-			allocator_type	_alloc;
-			key_compare		_cmp;
 			tree			_tree;
+			key_compare		_cmp;
+			allocator_type	_alloc;
 		
 		//SECTION - MEMBER FUNCTIONS
 		public:
@@ -78,7 +78,7 @@ namespace ft
 					first++;
 				}
 			}
-			map (const map& x) : _cmp(x.comp), _alloc(x.alloc)
+			map (const map& x) : _cmp(x._cmp), _alloc(x._alloc)
 			{
 				*this = x;
 			}
@@ -89,6 +89,8 @@ namespace ft
 				_tree.clear();
 				if (x.size())
 					insert(x.begin(), x.end());
+				_alloc = x._alloc;
+				_cmp = x._cmp;
 				return *this;
 			}
 			~map() {}
@@ -138,7 +140,7 @@ namespace ft
 			{
 				value_type data = ft::make_pair(k, mapped_type());
 				nodePtr	node = _tree.find(data);
-				if (node == _tree.getEnd())
+				if (!node || node == _tree.getEnd())
 				{
 					_tree.insert(data);
 					node = _tree.find(data);
@@ -149,7 +151,7 @@ namespace ft
 			{
 				nodePtr	node = _tree.find(val);
 				bool	notInserted = false;
-				if (node == _tree.getEnd())
+				if (!node || node == _tree.getEnd())
 				{
 					_tree.insert(val);
 					node = _tree.find(val);
@@ -161,7 +163,7 @@ namespace ft
 			{
 				static_cast<void>(position);
 				nodePtr	node = _tree.find(val);
-				if (node == _tree.getEnd())
+				if (!node || node == _tree.getEnd())
 				{
 					_tree.insert(val);
 					node = _tree.find(val);
@@ -186,7 +188,7 @@ namespace ft
 			size_type erase (const key_type& k)
 			{
 				nodePtr node = _tree.find(ft::make_pair(k, mapped_type()));
-				if (node == _tree.getEnd())
+				if (!node || node == _tree.getEnd())
 					return (0);
 				_tree.erase(node->data);
 				return (1);
@@ -198,18 +200,12 @@ namespace ft
 			void erase (iterator first, iterator last)
 			{
 				iterator tmp;
-				key_type fkey;
-				key_type lkey;
 				while (first != last)
 				{
 					tmp = first++;
+					erase(tmp);
 					if (first == iterator(_tree.getEnd()))
 						return ;
-					fkey = first->first;
-					lkey = last->first;
-					erase(tmp);
-					first = find(fkey);
-					last = find(lkey);
 				}
 			}
 			void swap (map& x)
@@ -236,7 +232,7 @@ namespace ft
 			{
 				nodePtr	node = _tree.find(ft::make_pair(k, mapped_type()));
 				
-				if (node == _tree.getEnd())
+				if (!node || node == _tree.getEnd())
 					return (0);
 				return (1);
 			}
