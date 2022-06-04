@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 02:38:59 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/05/27 20:29:17 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/04 19:10:43 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace ft
 		
 		Node() : parent(nullptr), left(nullptr), right(nullptr) {}
 		Node(const T& data) : data(data){}
-		Node(const T& data, const int height) : data(data), balanceFactor(0), height(height), parent(nullptr), left(nullptr), right(nullptr) {}
+		Node(const T& data, const int height) : data(data), parent(nullptr), left(nullptr), right(nullptr), balanceFactor(0), height(height) {}
 	};
 
 	//SECTION - BALANCED BINARY SEARCH TREE
@@ -54,7 +54,7 @@ namespace ft
 			allocator_type	_alloc;
 			key_compare		_cmp;
 			size_type		_size;
-			int		length;
+			int				length;
 		
 		public:
 			AVLTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : _root(nullptr), _end(nullptr), _alloc(alloc), _cmp(cmp), _size(0)
@@ -140,15 +140,20 @@ namespace ft
 			{
 				return find(data, _root);
 			}
-			void	insert(const value_type& data)
+			void	insert(const value_type data)
 			{
 				insert(data, _root, _end);
+				_end->left = _root;
+				_root->parent = _end;
 				if (length < getLenght(data.first))
 					length = getLenght(data.first);
 			}
 			void	erase(const value_type& data)
 			{
 				erase(_root, data);
+				_end->left = _root;
+				if (_root)
+					_root->parent = _end;
 			}
 			void	print()
 			{
@@ -164,10 +169,8 @@ namespace ft
 					tmp = node->left;
 				if (tmp)
 					tmp->parent = parent;
-				node->parent = _end;
 				_alloc.deallocate(node, 1);
 				node = tmp;
-				_end->left = _root;
 				_size--;
 			}
 			void	erase (nodePtr &node, const value_type& data)
@@ -211,14 +214,10 @@ namespace ft
 					node = _alloc.allocate(1);
 					_alloc.construct(node, data, 0);
 					node->parent = parent;
-					if (node == _root)
-						_end->left = _root;
 					_size++;
 					return ;
 				}
-				if (node->data.first == data.first)
-					node->data.second = data.second;
-				else if (_cmp(data.first, node->data.first))
+				if (_cmp(data.first, node->data.first))
 					insert(data, node->left, node);
 				else
 					insert(data, node->right, node);
@@ -227,15 +226,13 @@ namespace ft
 			}
 			nodePtr	find(const value_type& data, nodePtr& node)
 			{
-				if (node)
-				{
-					if (data.first == node->data.first)
-						return (node);
-					if (_cmp(data.first, node->data.first))
-						return (find(data, node->left));
-					return (find(data, node->right));
-				}
-				return (_end);
+				if (!node || node == _end)
+					return (_end);
+				if (data.first == node->data.first)
+					return (node);
+				if (_cmp(data.first, node->data.first))
+					return (find(data, node->left));
+				return (find(data, node->right));
 			}
 			nodePtr	successor(nodePtr node)
 			{
@@ -304,11 +301,12 @@ namespace ft
 				nodePtr	parent = node->parent;
 				nodePtr	root = node->right;
 				node->right = root->left;
+				if (node->right)
+					node->right->parent = node;
 				node->parent = root;
 				root->left = node;
 				root->parent = parent;
 				node = root;
-				_end->left = _root;
 				update(node->left);
 				update(node);
 			}		
@@ -317,11 +315,12 @@ namespace ft
 				nodePtr	parent = node->parent;
 				nodePtr	root = node->left;
 				node->left = root->right;
+				if (node->left)
+					node->left->parent = node;
 				node->parent = root;
 				root->right = node;
 				root->parent = parent;
 				node = root;
-				_end->left = _root;
 				update(node->right);
 				update(node);
 			}		
@@ -361,7 +360,7 @@ namespace ft
 			{
 				nodePtr node = _root;
 				std::ofstream	outfile("outfile", std::ios_base::app);
-				outfile << "\n";
+				outfile << "\n\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 				std::queue<nodePtr > q;
 				nodePtr empty = _alloc.allocate(1);
 				_alloc.construct(empty);
@@ -371,8 +370,9 @@ namespace ft
 				int	childs = 0;
 				int	repeat;
 				int	height = _root->height;
-				length += 2;
-
+				int len = (length * 2) + 3;
+				// length += 2;
+				
 				q.push(_root);
 				while (height >= 0)
 				{
@@ -386,7 +386,7 @@ namespace ft
 					else
 						q.push(empty);
 					q.pop();
-					currentSpaces = (std::pow(2, height) * length) - length;
+					currentSpaces = (std::pow(2, height) * len) - len;
 					if (level && (childs == (std::pow(2, level) - 1)))
 					{
 						repeat = pow(2, level);
@@ -397,7 +397,7 @@ namespace ft
 						{
 							if (repeat % 2)
 							{
-								spaces = (currentSpaces * 2) + (length * 3) - 2;
+								spaces = (currentSpaces * 2) + (len * 3) - 2;
 								outfile << "+";
 								while (spaces--)
 									outfile << "-";
@@ -405,7 +405,7 @@ namespace ft
 							}
 							else
 							{
-								spaces = (currentSpaces * 2) + (length * 1);
+								spaces = (currentSpaces * 2) + (len * 1);
 								while (spaces--)
 									outfile << " ";
 							}
@@ -416,12 +416,17 @@ namespace ft
 					while (spaces--)
 						outfile << " ";
 					outfile << "(";
-					repeat = (length - 2) - getLenght(current->data.first);
+					repeat = (length) - (getLenght(current->data.first));
 					while (repeat--)
 						outfile << " ";
 					outfile << current->data.first;
+					outfile << "|";
+					if (current->parent)
+						outfile << current->parent->data.first;
+					else
+						outfile << "000";
 					outfile << ")";
-					spaces = currentSpaces + length;
+					spaces = currentSpaces + len;
 					while (childs && spaces--)
 						outfile << " ";
 					if (!childs)
