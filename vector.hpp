@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 18:49:34 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/27 16:47:20 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/04 19:11:55 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ namespace ft
 		
 		//SECTION - MEMBER FUNCTIONS
 		public:
-			explicit vector (const allocator_type& alloc = allocator_type()) : _alloc(alloc), _capacity(0), _size(0), _arr(nullptr)
+			explicit vector (const allocator_type& alloc = allocator_type()) : _arr(nullptr), _size(0), _capacity(0), _alloc(alloc)  
 			{
 			}
 			explicit vector (size_type n, const value_type& val = value_type(),
@@ -81,7 +81,7 @@ namespace ft
 					first++;
 				}
 			}
-			vector (const vector& x) : _capacity(0), _size(0), _arr(nullptr)
+			vector (const vector& x) : _arr(nullptr), _size(0), _capacity(0)
 			{
 				*this = x;
 			}
