@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/17 23:32:01 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/06/04 19:10:20 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/05 14:46:43 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,10 +192,6 @@ namespace ft
 					return (0);
 				_tree.erase(node->data);
 				return (1);
-			}
-			void	print()
-			{
-				_tree.print();
 			}
 			void erase (iterator first, iterator last)
 			{
