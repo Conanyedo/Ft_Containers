@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 02:38:59 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/06/04 19:10:43 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/05 14:48:33 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,6 @@
 # define AVLTREE_HPP
 
 #include <iostream>
-#include <queue>
-#include <fstream>
-#include <iomanip>
-#include <cmath>
 
 namespace ft
 {
@@ -54,12 +50,10 @@ namespace ft
 			allocator_type	_alloc;
 			key_compare		_cmp;
 			size_type		_size;
-			int				length;
 		
 		public:
 			AVLTree(const allocator_type& alloc = allocator_type(), const key_compare& cmp = key_compare()) : _root(nullptr), _end(nullptr), _alloc(alloc), _cmp(cmp), _size(0)
 			{
-				length = 0;
 				_end = _alloc.allocate(1);
 				_alloc.construct(_end);
 			}
@@ -145,8 +139,6 @@ namespace ft
 				insert(data, _root, _end);
 				_end->left = _root;
 				_root->parent = _end;
-				if (length < getLenght(data.first))
-					length = getLenght(data.first);
 			}
 			void	erase(const value_type& data)
 			{
@@ -154,10 +146,6 @@ namespace ft
 				_end->left = _root;
 				if (_root)
 					_root->parent = _end;
-			}
-			void	print()
-			{
-				levelOrder();
 			}
 		private:
 			void	eraseHelper(nodePtr &node, nodePtr& parent)
@@ -342,102 +330,6 @@ namespace ft
 			{
 				rightRotation(node->right);
 				leftRotation(node);
-			}
-			int		getLenght(int data)
-			{
-				return (std::to_string(data).length());
-			}
-			int		getLenght(std::string data)
-			{
-				return (data.length());
-			}
-			int		getLenght(char data)
-			{
-				data = 'a';
-				return (1);
-			}
-			void	levelOrder()
-			{
-				nodePtr node = _root;
-				std::ofstream	outfile("outfile", std::ios_base::app);
-				outfile << "\n\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-				std::queue<nodePtr > q;
-				nodePtr empty = _alloc.allocate(1);
-				_alloc.construct(empty);
-				int	spaces = 0;
-				int	currentSpaces = 0;
-				int	level = 0;
-				int	childs = 0;
-				int	repeat;
-				int	height = _root->height;
-				int len = (length * 2) + 3;
-				// length += 2;
-				
-				q.push(_root);
-				while (height >= 0)
-				{
-					nodePtr current = q.front();
-					if (current->left)
-						q.push(current->left);
-					else
-						q.push(empty);
-					if (current->right)
-						q.push(current->right);
-					else
-						q.push(empty);
-					q.pop();
-					currentSpaces = (std::pow(2, height) * len) - len;
-					if (level && (childs == (std::pow(2, level) - 1)))
-					{
-						repeat = pow(2, level);
-						spaces = currentSpaces;
-						while (spaces--)
-							outfile << " ";
-						while (--repeat)
-						{
-							if (repeat % 2)
-							{
-								spaces = (currentSpaces * 2) + (len * 3) - 2;
-								outfile << "+";
-								while (spaces--)
-									outfile << "-";
-								outfile << "+";
-							}
-							else
-							{
-								spaces = (currentSpaces * 2) + (len * 1);
-								while (spaces--)
-									outfile << " ";
-							}
-						}
-						outfile << "\n";
-					}
-					spaces = currentSpaces;
-					while (spaces--)
-						outfile << " ";
-					outfile << "(";
-					repeat = (length) - (getLenght(current->data.first));
-					while (repeat--)
-						outfile << " ";
-					outfile << current->data.first;
-					outfile << "|";
-					if (current->parent)
-						outfile << current->parent->data.first;
-					else
-						outfile << "000";
-					outfile << ")";
-					spaces = currentSpaces + len;
-					while (childs && spaces--)
-						outfile << " ";
-					if (!childs)
-					{
-						height--;
-						level++;
-						childs = std::pow(2, level);
-						outfile << "\n";
-					}
-					childs--;
-				}
 			}
 	};
 }
