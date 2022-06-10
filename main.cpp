@@ -6,7 +6,7 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 15:57:33 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/06/04 19:12:51 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/10 11:07:46 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,115 +19,113 @@
 #include <stack>
 #include <map>
 #include <string>
-#include <deque>
-#include <stdlib.h>
 
 #ifndef NS
-#define NS std
+#define NS ft
 #endif
 
-// #define MAX_RAM 4294967296
-// #define BUFFER_SIZE 4096
-// struct Buffer
-// {
-// 	int idx;
-// 	char buff[BUFFER_SIZE];
-// };
+#define MAX_RAM 4294967296
+#define BUFFER_SIZE 4096
+struct Buffer
+{
+	int idx;
+	char buff[BUFFER_SIZE];
+};
 
 
-// #define COUNT (MAX_RAM / (int)sizeof(Buffer))
+#define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
-// template<typename T>
-// class MutantStack : public NS::stack<T>
-// {
-// public:
-// 	MutantStack() {}
-// 	MutantStack(const MutantStack<T>& src) { *this = src; }
-// 	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
-// 	{
-// 		this->c = rhs.c;
-// 		return *this;
-// 	}
-// 	~MutantStack() {}
+template<typename T>
+class MutantStack : public NS::stack<T>
+{
+public:
+	MutantStack() {}
+	MutantStack(const MutantStack<T>& src) { *this = src; }
+	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
+	{
+		this->c = rhs.c;
+		return *this;
+	}
+	~MutantStack() {}
 
-// 	typedef typename NS::stack<T>::container_type::iterator iterator;
+	typedef typename NS::stack<T>::container_type::iterator iterator;
 
-// 	iterator begin() { return this->c.begin(); }
-// 	iterator end() { return this->c.end(); }
-// };
+	iterator begin() { return this->c.begin(); }
+	iterator end() { return this->c.end(); }
+};
 
-// int main(int argc, char** argv) {
-// 	if (argc != 2)
-// 	{
-// 		std::cerr << "Usage: ./test seed" << std::endl;
-// 		std::cerr << "Provide a seed please" << std::endl;
-// 		std::cerr << "Count value:" << COUNT << std::endl;
-// 		return 1;
-// 	}
-// 	const int seed = atoi(argv[1]);
-// 	srand(seed);
+int main(int argc, char** argv) {
+	if (argc != 2)
+	{
+		std::cerr << "Usage: ./test seed" << std::endl;
+		std::cerr << "Provide a seed please" << std::endl;
+		std::cerr << "Count value:" << COUNT << std::endl;
+		return 1;
+	}
+	const int seed = atoi(argv[1]);
+	srand(seed);
 
-// 	NS::vector<std::string> vector_str;
-// 	NS::vector<int> vector_int;
-// 	NS::stack<int> stack_int;
-// 	NS::vector<Buffer> vector_buffer;
-// 	NS::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
-// 	NS::map<int, int> map_int;
+	NS::vector<std::string> vector_str;
+	NS::vector<int> vector_int;
+	NS::stack<int> stack_int;
+	NS::vector<Buffer> vector_buffer;
+	NS::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
+	NS::map<int, int> map_int;
 
-// 	for (int i = 0; i < COUNT; i++)
-// 	{
-// 		vector_buffer.push_back(Buffer());
-// 	}
+	for (int i = 0; i < COUNT; i++)
+	{
+		vector_buffer.push_back(Buffer());
+	}
 
-// 	for (int i = 0; i < COUNT; i++)
-// 	{
-// 		const int idx = rand() % COUNT;
-// 		vector_buffer[idx].idx = 5;
-// 	}
-// 	NS::vector<Buffer>().swap(vector_buffer);
+	for (int i = 0; i < COUNT; i++)
+	{
+		const int idx = rand() % COUNT;
+		vector_buffer[idx].idx = 5;
+	}
+	NS::vector<Buffer>().swap(vector_buffer);
 
-// 	try
-// 	{
-// 		for (int i = 0; i < COUNT; i++)
-// 		{
-// 			const int idx = rand() % COUNT;
-// 			vector_buffer.at(idx);
-// 			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-// 		}
-// 	}
-// 	catch(const std::exception& e)
-// 	{
-// 		//NORMAL ! :P
-// 	}
+	try
+	{
+		for (int i = 0; i < COUNT; i++)
+		{
+			const int idx = rand() % COUNT;
+			vector_buffer.at(idx);
+			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
+		}
+	}
+	catch(const std::exception& e)
+	{
+		//NORMAL ! :P
+	}
 	
-// 	for (int i = 0; i < COUNT; ++i)
-// 	{
-// 		map_int.insert(NS::make_pair(rand(), rand()));
-// 	}
+	for (int i = 0; i < COUNT; ++i)
+	{
+		map_int.insert(NS::make_pair(rand(), rand()));
+	}
 
-// 	int sum = 0;
-// 	for (int i = 0; i < 10000; i++)
-// 	{
-// 		int access = rand();
-// 		sum += map_int[access];
-// 	}
-// 	std::cout << "should be constant with the same seed: " << sum << std::endl;
+	int sum = 0;
+	for (int i = 0; i < 10000; i++)
+	{
+		int access = rand();
+		sum += map_int[access];
+	}
+	std::cout << "should be constant with the same seed: " << sum << std::endl;
 
-// 	{
-// 		NS::map<int, int> copy = map_int;
-// 	}
-// 	MutantStack<char> iterable_stack;
-// 	for (char letter = 'a'; letter <= 'z'; letter++)
-// 		iterable_stack.push(letter);
-// 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-// 	{
-// 		std::cout << *it;
-// 	}
-// 	std::cout << std::endl;
-// 	return (0);
-// }
+	{
+		NS::map<int, int> copy = map_int;
+	}
+	MutantStack<char> iterable_stack;
+	for (char letter = 'a'; letter <= 'z'; letter++)
+		iterable_stack.push(letter);
+	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
+	{
+		std::cout << *it;
+	}
+	std::cout << std::endl;
+	return (0);
+}
 
-
+/*
 int main()
 {
 	
@@ -137,7 +135,7 @@ int main()
 
     //NOTE - Constructor
     {
-        std::cout << "------------- Library FT (Constructor) -------------" << std::endl;
+        std::cout << "------------- Vector Constructors -------------" << std::endl;
         NS::vector<int> first1;
         NS::vector<int> second(4, 100);
         NS::vector<int> third(second.begin(), second.end());
@@ -152,7 +150,7 @@ int main()
 
     //NOTE - Assign content (operator=)
     {
-        std::cout << "------------- Library FT (operator=)-------------" << std::endl;
+        std::cout << "------------- Assignment operator -------------" << std::endl;
         NS::vector<int> foo1(3, 0);
         NS::vector<int> bar1(5, 0);
         bar1 = foo1;
@@ -163,7 +161,7 @@ int main()
 
     //NOTE - Return iterator to beginning
     {
-        std::cout << "------------- Library FT (iterator to beginning)-------------" << std::endl;
+        std::cout << "------------- begin() -------------" << std::endl;
         NS::vector<int> myvector1;
         for (int i = 1; i <= 5; i++)
             myvector1.push_back(i);
@@ -175,7 +173,7 @@ int main()
 
     //NOTE - Return iterator to end
     {
-        std::cout << "------------- Library FT (iterator to end)-------------" << std::endl;
+        std::cout << "------------- end() -------------" << std::endl;
         NS::vector<int> myvector1;
         for (int i = 1; i <= 5; i++)
             myvector1.push_back(i);
@@ -187,7 +185,7 @@ int main()
 
     // NOTE - Return reverse iterator to reverse beginning
     {
-        std::cout << "------------- Library FT (reverse iterator to reverse beginning)-------------" << std::endl;
+        std::cout << "------------- reverse begin -------------" << std::endl;
         NS::vector<int> myvector1(5); // 5 default-constructed ints
         int i1 = 0;
         NS::vector<int>::reverse_iterator rit1 = myvector1.rbegin();
@@ -201,7 +199,7 @@ int main()
 
     // NOTE - Return reverse iterator to reverse end
     {
-        std::cout << "------------- Library FT (reverse iterator to reverse end)-------------" << std::endl;
+        std::cout << "------------- reverse end -------------" << std::endl;
         NS::vector<int> myvector1(5);
         NS::vector<int>::reverse_iterator rit1 = myvector1.rbegin();
         int i1 = 0;
@@ -215,7 +213,7 @@ int main()
 
     // NOTE - Return size
     {
-        std::cout << "------------- Library FT (size)-------------" << std::endl;
+        std::cout << "------------- vector size -------------" << std::endl;
         NS::vector<int> myints1;
         std::cout << "0. size: " << myints1.size() << '\n';
         for (int i = 0; i < 10; i++)
@@ -229,7 +227,7 @@ int main()
 
     // NOTE - Return maximum size
     {
-        std::cout << "------------- Library FT (maximum size)-------------" << std::endl;
+        std::cout << "------------- vector max size -------------" << std::endl;
         NS::vector<int> myvector1;
         for (int i = 0; i < 100; i++)
             myvector1.push_back(i);
@@ -240,7 +238,7 @@ int main()
 
     // NOTE - Change size
     {
-        std::cout << "------------- Library FT (resize)-------------" << std::endl;
+        std::cout << "------------- resize vector -------------" << std::endl;
         NS::vector<int> myvector1;
         for (int i = 1; i < 10; i++)
             myvector1.push_back(i);
@@ -255,7 +253,7 @@ int main()
 
     // NOTE - Return size of allocated storage capacity
     {
-        std::cout << "------------- Library FT (Return size of allocated storage capacity)-------------" << std::endl;
+        std::cout << "------------- capacity -------------" << std::endl;
         NS::vector<int> myvector1;
         for (int i = 0; i < 100; i++)
             myvector1.push_back(i);
@@ -266,7 +264,7 @@ int main()
 
     // NOTE - Test whether vector is empty
     {
-        std::cout << "------------- Library FT (Test whether vector is empty)-------------" << std::endl;
+        std::cout << "------------- empty -------------" << std::endl;
         NS::vector<int> myvector1;
         int sum1(0);
         for (int i = 1; i <= 10; i++)
@@ -281,7 +279,7 @@ int main()
 
     // NOTE - Request a change in capacity
     {
-        std::cout << "------------- Library FT (Request a change in capacity)-------------" << std::endl;
+        std::cout << "------------- reserve -------------" << std::endl;
         NS::vector<int>::size_type sz1;
         NS::vector<int> foo1;
         sz1 = foo1.capacity();
@@ -312,7 +310,7 @@ int main()
 
     // NOTE - Access element
     {
-        std::cout << "------------- Library FT (Access element)-------------" << std::endl;
+        std::cout << "------------- Access element with operator[] -------------" << std::endl;
         NS::vector<int> myvector1(10);
         NS::vector<int>::size_type sz1 = myvector1.size();
         for (unsigned i = 0; i < sz1; i++)
@@ -332,7 +330,7 @@ int main()
 
     // NOTE - Access element
     {
-        std::cout << "------------- Library FT (Access element)-------------" << std::endl;
+        std::cout << "------------- Access element with at() -------------" << std::endl;
         NS::vector<int> myvector1(10);
         for (unsigned i = 0; i < myvector1.size(); i++)
             myvector1.at(i) = i;
@@ -344,7 +342,7 @@ int main()
 
     // NOTE - Access first element
     {
-        std::cout << "------------- Library FT (Access first element)-------------" << std::endl;
+        std::cout << "------------- Access first element with front() -------------" << std::endl;
         NS::vector<int> myvector1;
         myvector1.push_back(78);
         myvector1.push_back(16);
@@ -353,7 +351,7 @@ int main()
     }
     // NOTE - Access last element
     {
-        std::cout << "------------- Library FT (Access last element)-------------" << std::endl;
+        std::cout << "------------- Access last element with back() -------------" << std::endl;
         NS::vector<int> myvector1;
         myvector1.push_back(10);
         while (myvector1.back() != 0)
@@ -368,7 +366,7 @@ int main()
 
     // NOTE - Assign vector content
     {
-        std::cout << "------------- Library FT (Assign vector content)-------------" << std::endl;
+        std::cout << "------------- assign -------------" << std::endl;
         NS::vector<int> first1;
         NS::vector<int> second1;
         NS::vector<int> third1;
@@ -385,7 +383,7 @@ int main()
 
     // NOTE - Add element at the end
     {
-        std::cout << "------------- Library FT (Add element at the end)-------------" << std::endl;
+        std::cout << "------------- push back -------------" << std::endl;
         NS::vector<int> myvector1;
         int myint1;
         std::cout << "Please enter some integers (enter 0 to end):\n";
@@ -399,7 +397,7 @@ int main()
 
     // NOTE - Delete last element
     {
-        std::cout << "------------- Library FT (Delete last element)-------------" << std::endl;
+        std::cout << "------------- pop back -------------" << std::endl;
         NS::vector<int> myvector1;
         int sum1(0);
         myvector1.push_back(100);
@@ -414,7 +412,7 @@ int main()
     }
     // NOTE - Clear content
     {
-        std::cout << "------------- Library FT (Clear content)-------------" << std::endl;
+        std::cout << "------------- clear -------------" << std::endl;
         NS::vector<int> myvector1;
         myvector1.push_back(100);
         myvector1.push_back(200);
@@ -438,7 +436,7 @@ int main()
 
     // NOTE - Insert elements
     {
-        std::cout << "------------- Library FT (Insert elements)-------------" << std::endl;
+        std::cout << "------------- insert -------------" << std::endl;
         NS::vector<int> myvector1(3, 100);
         std::cout << myvector1.size() << std::endl;
         std::cout << myvector1.capacity() << std::endl;
@@ -478,7 +476,7 @@ int main()
 
     // NOTE - Erase elements
     {
-        std::cout << "------------- Library FT (Erase elements)-------------" << std::endl;
+        std::cout << "------------- erase -------------" << std::endl;
         NS::vector<int> myvector;
         // set some values (from 1 to 10)
         for (int i = 1; i <= 10; i++)
@@ -495,7 +493,7 @@ int main()
 
     // NOTE - Swap content
     {
-        std::cout << "------------- Library FT (Swap content)-------------" << std::endl;
+        std::cout << "------------- swap -------------" << std::endl;
         NS::vector<int> foo1(3, 100); // three ints with a value of 100
         NS::vector<int> bar1(5, 200); // five ints with a value of 200
         std::cout << "Size foo1 before " << foo1.size() << std::endl;
@@ -519,7 +517,7 @@ int main()
 
     // // NOTE - Get allocator
     {
-        std::cout << "------------- Library FT (Get allocator)-------------" << std::endl;
+        std::cout << "------------- get allocator -------------" << std::endl;
         NS::vector<int> myvector;
         int *p;
         unsigned int i;
@@ -537,7 +535,7 @@ int main()
 	
     // // NOTE - Relational operators for vector
     {
-        std::cout << "------------- Library FT (Relational operators for vector)-------------" << std::endl;
+        std::cout << "------------- relational operators -------------" << std::endl;
         NS::vector<int> foo(2, 200);
         NS::vector<int> bar;
         bar.push_back(200);
@@ -560,7 +558,7 @@ int main()
 	
     // // NOTE - Exchange contents of vectors
     {
-        std::cout << "------------- Library FT (Exchange contents of vectors)-------------" << std::endl;
+        std::cout << "------------- swap (non-member function)-------------" << std::endl;
         NS::vector<int> foo(3, 100); // three ints with a value of 100
         NS::vector<int> bar(5, 200); // five ints with a value of 200
         NS::swap(foo, bar);
@@ -575,12 +573,16 @@ int main()
     }
 
     std::cout << "*************************************************************************" << std::endl;
+    std::cout << "\t\t\t\tEnd Vector" << std::endl;
+    std::cout << "*************************************************************************" << std::endl;
+
+    std::cout << "*************************************************************************" << std::endl;
     std::cout << "\t\t\t\tStack" << std::endl;
     std::cout << "*************************************************************************" << std::endl;
 
     // NOTE - NS::stack::stack
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- Stack constructor -------------" << std::endl;
         NS::vector<int> myvector (2,200);        // vector with 2 elements
         NS::stack<int> first;                    // empty stack
         NS::stack<int,NS::vector<int> > third;  // empty stack using vector
@@ -592,7 +594,7 @@ int main()
     }
     // // NOTE - NS::stack::empty
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- empty -------------" << std::endl;
         NS::stack<int> mystack;
         int sum(0);
         for (int i = 1; i <= 10; i++)
@@ -607,7 +609,7 @@ int main()
 
     // // NOTE - NS::stack::size
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- size -------------" << std::endl;
         NS::stack<int> myints;
         std::cout << "0. size: " << myints.size() << '\n';
         for (int i = 0; i < 5; i++)
@@ -619,7 +621,7 @@ int main()
 
     // // NOTE - NS::stack::top
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- top -------------" << std::endl;
         NS::stack<int> mystack;
         mystack.push(10);
         mystack.push(20);
@@ -629,7 +631,7 @@ int main()
 
     // // NOTE - NS::stack::push
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- push -------------" << std::endl;
         NS::stack<int> mystack;
         for (int i = 0; i < 5; ++i)
             mystack.push(i);
@@ -644,7 +646,7 @@ int main()
 
     // // NOTE - NS::stack::pop
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- pop -------------" << std::endl;
         NS::stack<int> mystack;
         for (int i = 0; i < 5; ++i)
             mystack.push(i);
@@ -659,7 +661,7 @@ int main()
 
     // // NOTE - operator==
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator == -------------" << std::endl;
         NS::stack<int, NS::vector<int> > s1, s2, s3;
         s1.push(1);
         s2.push(2);
@@ -678,7 +680,7 @@ int main()
 
     // // NOTE - operator!=
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator != -------------" << std::endl;
         NS::stack<int, NS::vector<int> > s1, s2, s3;
         s1.push(1);
         s2.push(2);
@@ -695,7 +697,7 @@ int main()
 
     // // NOTE - operator<
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator < -------------" << std::endl;
         NS::stack<int, NS::vector<int> > s1, s2, s3;
         s1.push(2);
         s1.push(4);
@@ -733,7 +735,7 @@ int main()
 
     // // NOTE - operator<=
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator <= -------------" << std::endl;
         NS::stack<int> s1, s2, s3;
         s1.push(5);
         s1.push(10);
@@ -758,7 +760,7 @@ int main()
 
     // // NOTE - operator>
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator > -------------" << std::endl;
         NS::stack<int, NS::vector<int> > s1, s2, s3;
         s1.push(1);
         s1.push(2);
@@ -784,7 +786,7 @@ int main()
 
     // // NOTE - operator>=
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator >= -------------" << std::endl;
         NS::stack<int, NS::vector<int> > s1, s2, s3;
         s1.push(1);
         s1.push(2);
@@ -808,12 +810,16 @@ int main()
     }
 
     std::cout << "*************************************************************************" << std::endl;
+    std::cout << "\t\t\t\tEnd Stack" << std::endl;
+    std::cout << "*************************************************************************" << std::endl;
+    
+	std::cout << "*************************************************************************" << std::endl;
     std::cout << "\t\t\t\tMap" << std::endl;
     std::cout << "*************************************************************************" << std::endl;
 
     // NOTE - Construct pair
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- Pair Constructor -------------" << std::endl;
         NS::pair<std::string, double> product1;
         NS::pair<std::string, double> product2("tomatoes", 2.30);
         NS::pair<std::string, double> product3(product2);
@@ -827,7 +833,7 @@ int main()
 
     // NOTE - pair::operator= example
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- Pair Assignment operator = -------------" << std::endl;
         NS::pair<std::string, int> planet("Earth", 6371), homeplanet;
         planet = NS::make_pair("Earth", 6371);
         homeplanet = planet;
@@ -837,7 +843,7 @@ int main()
 
     // NOTE - make_pair example
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- make pair -------------" << std::endl;
         NS::pair<int, int> foo;
         NS::pair<int, int> bar;
         foo = NS::make_pair(10, 20);
@@ -848,7 +854,7 @@ int main()
 
     // NOTE - Relational operators for pair
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- Pair relational operators -------------" << std::endl;
         NS::pair<int, char> foo(10, 'z');
         NS::pair<int, char> bar(90, 'a');
         if (foo == bar)
@@ -867,7 +873,7 @@ int main()
 
     // NOTE - Construct map
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- Map Constructors -------------" << std::endl;
         NS::map<char, int> first;
         first['a'] = 10;
         first['b'] = 30;
@@ -882,7 +888,7 @@ int main()
 
     // NOTE - Access element
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- operator [] -------------" << std::endl;
         NS::map<char, std::string> mymap;
         mymap['a'] = "an element";
         mymap['b'] = "another element";
@@ -896,7 +902,7 @@ int main()
 
     // NOTE - Test whether container is empty
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- empty -------------" << std::endl;
         NS::map<char, int> mymap;
         mymap['a'] = 10;
         mymap['b'] = 20;
@@ -910,7 +916,7 @@ int main()
 
     // NOTE - Return maximum size
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- max size -------------" << std::endl;
         int i;
         NS::map<int, int> mymap;
         if (mymap.max_size() > 1000)
@@ -924,7 +930,7 @@ int main()
 
     // NOTE - Insert elements
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- insert -------------" << std::endl;
         // first insert function version (single parameter):
         NS::map<char, int> mymap;
         mymap.insert(NS::pair<char, int>('a', 100));
@@ -955,7 +961,7 @@ int main()
 
     // NOTE - Clear content
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- clear -------------" << std::endl;
         NS::map<char, int> mymap;
         mymap['x'] = 100;
         mymap['y'] = 200;
@@ -973,7 +979,7 @@ int main()
 
     // NOTE - Assignement Operator (new_map = old_map)
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- Assignment operator = -------------" << std::endl;
         NS::map<char, int> first;
         NS::map<char, int> second;
         first['x'] = 8;
@@ -987,7 +993,7 @@ int main()
 
     // NOTE - Erase elements
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- erase -------------" << std::endl;
         NS::map<char, int> mymap;
         // insert some values:
         mymap['a'] = 10;
@@ -1011,7 +1017,7 @@ int main()
 
     // NOTE - Swap content
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- swap -------------" << std::endl;
         NS::map<char, int> foo, bar;
         foo['x'] = 100;
         foo['y'] = 200;
@@ -1032,7 +1038,7 @@ int main()
 
     // NOTE - Return key comparison object
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- key comp object -------------" << std::endl;
         NS::map<char, int> mymap;
         mymap['a'] = 100;
         mymap['b'] = 200;
@@ -1049,7 +1055,7 @@ int main()
 	
     // NOTE - Return value comparison object
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- value comp object -------------" << std::endl;
         NS::map<char, int, std::greater<char> > mymap;
         mymap['x'] = 1001;
         mymap['y'] = 2002;
@@ -1065,7 +1071,7 @@ int main()
 	
     // NOTE - Get iterator to element
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- find -------------" << std::endl;
         NS::map<char, int> mymap;
         NS::map<char, int>::iterator it;
         mymap['a'] = 50;
@@ -1084,7 +1090,7 @@ int main()
 
     // NOTE - Count elements with a specific key
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- count -------------" << std::endl;
         std::map<char, int> mymap;
         char c;
         mymap['a'] = 101;
@@ -1103,7 +1109,7 @@ int main()
     // NOTE - Return iterator to lower bound
     // NOTE - Return iterator to upper bound
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- lower and upper bound -------------" << std::endl;
         NS::map<char, int> mymap;
         NS::map<char, int>::iterator itlow, itup;
         mymap['a'] = 20;
@@ -1121,7 +1127,7 @@ int main()
 
     // NOTE - Get range of equal elements
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- equal range -------------" << std::endl;
         NS::map<char, int> mymap;
         mymap['a'] = 10;
         mymap['b'] = 20;
@@ -1136,7 +1142,7 @@ int main()
 
     // NOTE - Get allocator
     {
-        std::cout << "------------- Library FT -------------" << std::endl;
+        std::cout << "------------- get allocator -------------" << std::endl;
         int psize;
         NS::map<char, int> mymap;
         NS::pair<const char, int> *p;
@@ -1159,3 +1165,4 @@ int main()
         }
     }
 }
+*/
