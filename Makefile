@@ -6,7 +6,7 @@
 #    By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/04 19:05:26 by ybouddou          #+#    #+#              #
-#    Updated: 2022/06/04 19:08:46 by ybouddou         ###   ########.fr        #
+#    Updated: 2022/06/10 11:07:53 by ybouddou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,13 +18,20 @@ SRC =	main.cpp
 
 INC =	vector.hpp\
 		map.hpp\
-		stack.hpp
+		stack.hpp\
+		AVLTree.hpp\
+		enable_if.hpp\
+		iteratorTraits.hpp\
+		map_iterator.hpp\
+		myiterator.hpp\
+		pair.hpp\
+		reverseiterator.hpp\
 
 OBJ = $(SRC:.cpp=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(INC)
 	@$(CC) $(OBJ) -o $(NAME)
 
 %.o: %.cpp $(INC)
