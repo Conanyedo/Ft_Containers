@@ -6,15 +6,14 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 03:18:48 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/05/27 18:44:39 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/10 09:58:35 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_ITERATOR_HPP
 # define MAP_ITERATOR_HPP
 
-#include <iostream>
-#include "myiterator.hpp"
+#include "iteratorTraits.hpp"
 
 namespace ft
 {
