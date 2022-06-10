@@ -6,18 +6,17 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/17 23:32:01 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/06/05 14:46:43 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/10 09:58:51 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 # define MAP_HPP
 
-#include <iostream>
+#include "map_iterator.hpp"
 #include "reverseIterator.hpp"
 #include "pair.hpp"
 #include "AVLTree.hpp"
-#include "map_iterator.hpp"
 
 namespace ft
 {
