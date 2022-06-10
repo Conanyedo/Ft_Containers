@@ -6,14 +6,12 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 02:38:59 by conanyedo         #+#    #+#             */
-/*   Updated: 2022/06/05 14:48:33 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/10 09:57:58 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AVLTREE_HPP
 # define AVLTREE_HPP
-
-#include <iostream>
 
 namespace ft
 {
