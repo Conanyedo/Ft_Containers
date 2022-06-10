@@ -6,14 +6,14 @@
 /*   By: ybouddou <ybouddou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 22:02:54 by ybouddou          #+#    #+#             */
-/*   Updated: 2022/05/27 10:54:32 by ybouddou         ###   ########.fr       */
+/*   Updated: 2022/06/10 09:59:37 by ybouddou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REVERSEITERATOR_HPP
 # define REVERSEITERATOR_HPP
 
-#include "myiterator.hpp"
+#include "iteratorTraits.hpp"
 
 namespace ft
 {
